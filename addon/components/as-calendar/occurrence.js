@@ -20,7 +20,7 @@ export default Component.extend({
   computedTimeSlotDuration: computedDuration('timeSlotDuration'),
 
   titleStyle: computed('timeSlotHeight', function() {
-    return htmlSafe(`line-height: ${this.get('timeSlotHeight')}px;`);
+    return htmlSafe(`line-height: ${this.timeSlotHeight}px;`);
   }),
 
   _duration: oneWay('model.duration'),
@@ -31,12 +31,12 @@ export default Component.extend({
     'isMonthView',
     '_duration',
     'computedTimeSlotDuration', function () {
-      return this.get('isMonthView') ? 1 : this.get('_duration').as('ms') /
-             this.get('computedTimeSlotDuration').as('ms');
+      return this.isMonthView ? 1 : this._duration.as('ms') /
+             this.computedTimeSlotDuration.as('ms');
   }),
 
   _height: computed('_occupiedTimeSlots', function() {
-    return this.get('timeSlotHeight') * this.get('_occupiedTimeSlots');
+    return this.timeSlotHeight * this._occupiedTimeSlots;
   }),
 
   _top: computed(
@@ -44,14 +44,14 @@ export default Component.extend({
     '_dayStartingTime',
     'computedTimeSlotDuration',
     'timeSlotHeight', function () {
-    return (this.get('_startingTime').diff(this.get('_dayStartingTime')) /
-            this.get('computedTimeSlotDuration').as('ms')) *
-            this.get('timeSlotHeight');
+    return (this._startingTime.diff(this._dayStartingTime) /
+            this.computedTimeSlotDuration.as('ms')) *
+            this.timeSlotHeight;
   }),
 
   _style: computed('_height', '_top', function() {
-    return htmlSafe(`top: ${this.get('_top')}px;
-            height: ${this.get('_height')}px;`);
+    return htmlSafe(`top: ${this._top}px;
+            height: ${this._height}px;`);
   }),
 
   click(event) {

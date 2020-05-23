@@ -12,7 +12,7 @@ var Day = EmberObject.extend({
   shortListLimit: 2,
 
   value: computed('_period', 'offset', function () {
-    return moment(this.get('_period')).clone().add(this.get('offset'), 'day');
+    return moment(this._period).clone().add(this.offset, 'day');
   }),
 
   occurrences: computed(
@@ -21,25 +21,25 @@ var Day = EmberObject.extend({
     'endingTime', function () {
       return this.get('calendar.occurrences').filter((occurrence) => {
         const startingTime = occurrence.get('startingTime');
-        const endingTime = this.get('endingTime').subtract(1, 'minutes');
+        const endingTime = this.endingTime.subtract(1, 'minutes');
 
-        return startingTime >= this.get('startingTime') &&
+        return startingTime >= this.startingTime &&
           startingTime <= endingTime;
       });
   }),
 
   shortOccurencesList: computed('occurrences', function () { // get first 3 occurences for month view
-    return this.get('occurrences').slice(0, this.get('shortListLimit'));
+    return this.occurrences.slice(0, this.shortListLimit);
   }),
 
   showMoreCount: computed('occurrences', function () { // get first 3 occurences for month view
     const length = this.get('occurrences.length');
-    const limit = this.get('shortListLimit');
+    const limit = this.shortListLimit;
     return length > limit ? length - limit : 0;
   }),
 
   hasShowMore: computed('showMoreCount', function () { // get first 3 occurences for month view
-    return !!this.get('showMoreCount');
+    return !!this.showMoreCount;
   }),
 
   occurrencePreview: computed(
@@ -51,8 +51,8 @@ var Day = EmberObject.extend({
     if (occurrencePreview != null) {
       var startingTime = occurrencePreview.get('startingTime');
 
-      if (startingTime >= this.get('startingTime') &&
-          startingTime <= this.get('endingTime')) {
+      if (startingTime >= this.startingTime &&
+          startingTime <= this.endingTime) {
         return occurrencePreview;
       } else {
         return null;
@@ -65,25 +65,25 @@ var Day = EmberObject.extend({
   startingTime: computed(
     'value',
     '_timeSlots.firstObject.time', function () {
-    return moment(this.get('value')).clone().startOf('day')
+    return moment(this.value).clone().startOf('day')
       .add(this.get('_timeSlots.firstObject.time'));
   }),
 
   endingTime: computed(
     'value',
     '_timeSlots.lastObject.endingTime', function() {
-    return moment(this.get('value')).clone().startOf('day')
+    return moment(this.value).clone().startOf('day')
       .add(this.get('_timeSlots.lastObject.endingTime'));
   }),
 
   isToday: computed('value', function() {
-    return this.get('value').isSame(moment(), 'day');
+    return this.value.isSame(moment(), 'day');
   }),
 
   _week: oneWay('calendar.week'),
   _timeSlots: oneWay('calendar.timeSlots'),
   isOutOfPeriod: computed('isInPeriod', function() {
-    return !this.get('isInPeriod');
+    return !this.isInPeriod;
   }),
 
   _period: oneWay('calendar.period'),

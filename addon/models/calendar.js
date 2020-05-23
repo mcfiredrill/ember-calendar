@@ -29,31 +29,31 @@ export default EmberObject.extend({
   showAllHours: true,
 
   indexType: computed('type', function () {
-    return indexTypesMap[this.get('type')];
+    return indexTypesMap[this.type];
   }),
 
   isoType: computed('type', function () {
-    return isoTypesMap[this.get('type')];
+    return isoTypesMap[this.type];
   }),
 
   isInCurrentPeriod: computed('period', '_currentPeriod', function () {
-    return this.get('period').isSame(this.get('_currentPeriod'));
+    return this.period.isSame(this._currentPeriod);
   }),
 
   hasTimeSlots: computed('type', function () {
-    return this.get('type') !== 'month';
+    return this.type !== 'month';
   }),
 
   isMonthView: computed('type', function () {
-    return this.get('type') === 'month';
+    return this.type === 'month';
   }),
 
   isWeekView: computed('type', function () {
-    return this.get('type') === 'week';
+    return this.type === 'week';
   }),
 
   isDayView: computed('type', function () {
-    return this.get('type') === 'day';
+    return this.type === 'day';
   }),
 
   timeSlots: computed(
@@ -62,17 +62,17 @@ export default EmberObject.extend({
     'timeSlotDuration',
     'showAllHours', function () {
       return TimeSlot.buildDay({
-        timeZone: this.get('timeZone'),
-        startingTime: this.get('dayStartingTime'),
-        endingTime: this.get('dayEndingTime'),
-        duration: this.get('timeSlotDuration'),
-        showAllHours: this.get('showAllHours')
+        timeZone: this.timeZone,
+        startingTime: this.dayStartingTime,
+        endingTime: this.dayEndingTime,
+        duration: this.timeSlotDuration,
+        showAllHours: this.showAllHours
       });
     }),
 
   days: computed('type', 'period', function () {
     var res = null;
-    switch (this.get('type')) {
+    switch (this.type) {
     case 'day':
       res = Day.buildDay({ calendar: this });
       break;
@@ -90,27 +90,27 @@ export default EmberObject.extend({
   }),
 
   startDate: computed('startingTime', 'isoType', function () {
-    return moment(this.get('startingTime')).startOf(this.get('isoType'));
+    return moment(this.startingTime).startOf(this.isoType);
   }),
 
   endDate: computed('startingTime', 'isoType', function () {
-    return moment(this.get('startingTime')).endOf(this.get('isoType'));
+    return moment(this.startingTime).endOf(this.isoType);
   }),
 
   period: computed('startingTime', 'timeZone', 'isoType', function () {
-    return moment(this.get('startingTime')).startOf(this.get('isoType'));
+    return moment(this.startingTime).startOf(this.isoType);
   }),
 
   _currentPeriod: computed('timeZone', 'isoType', function () {
-    return moment().startOf(this.get('isoType'));
+    return moment().startOf(this.isoType);
   }),
 
   init() {
     this._super(...arguments);
-    if (this.get('startingTime') == null) {
+    if (this.startingTime == null) {
       this.goToToday();
     }
-    if (!this.get('dayNames') || !this.get('dayNames').length) {
+    if (!this.dayNames || !this.dayNames.length) {
       this.generateDayNames();
     }
     this.dayNames = [];
@@ -119,10 +119,10 @@ export default EmberObject.extend({
   createOccurrence: function (options) {
     var content = merge({
       endsAt: moment(options.startsAt)
-        .add(this.get('defaultOccurrenceDuration')).toDate(),
+        .add(this.defaultOccurrenceDuration).toDate(),
 
-      title: this.get('defaultOccurrenceTitle'),
-      type: this.get('defaultOccurrenceType')
+      title: this.defaultOccurrenceTitle,
+      type: this.defaultOccurrenceType
     }, options);
 
     return OccurrenceProxy.create({
@@ -136,9 +136,9 @@ export default EmberObject.extend({
   },
 
   navigate(index) {
-    const indexType = this.get('indexType');
-    const isoType = this.get('isoType');
-    const date = moment(this.get('startingTime')).add(index, indexType).startOf(isoType);
+    const indexType = this.indexType;
+    const isoType = this.isoType;
+    const date = moment(this.startingTime).add(index, indexType).startOf(isoType);
 
     if (!this.checkIfDateInPeriod(date)) {
       this.set('startingTime', date);
@@ -175,6 +175,6 @@ export default EmberObject.extend({
   },
 
   checkIfDateInPeriod: function (date) {
-    return this.get('period').isSame(moment(date).startOf(this.get('isoType')));
+    return this.period.isSame(moment(date).startOf(this.isoType));
   }
 });

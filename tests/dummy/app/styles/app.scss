@@ -1,4 +1,4 @@
-@import "font-awesome";
+//@import "font-awesome";
 @import 'addons/ember-calendar/paint-core';
 @import 'addons/ember-calendar/main';
 html {
@@ -43,7 +43,7 @@ body {
         color: color(link);
       }
       i {
-        @include icon(caret-down);
+        //@include icon(caret-down);
         transition: transform 200ms ease;
       }
       span {
@@ -84,7 +84,7 @@ body {
           top: dropdown-settings(search, padding-inner);
           width: dropdown-settings(search, icon-size);
           i {
-            @include icon(search);
+            //@include icon(search);
             color: color(primary);
             line-height: dropdown-settings(search, icon-size);
           }

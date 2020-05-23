@@ -27,11 +27,11 @@ module('AsCalendarComponent', function(hooks) {
     this.set('occurrences', A());
 
     this.actions.calendarAddOccurrence = (occurrence) => {
-      this.get('occurrences').pushObject(occurrence);
+      this.occurrences.pushObject(occurrence);
     };
 
     this.actions.calendarRemoveOccurrence = (occurrence) => {
-      this.get('occurrences').removeObject(occurrence);
+      this.occurrences.removeObject(occurrence);
     };
 
     this.actions.calendarUpdateOccurrence = (occurrence, properties) => {
@@ -52,11 +52,11 @@ module('AsCalendarComponent', function(hooks) {
         onRemoveOccurrence=(action "calendarRemoveOccurrence")}}
     `);
 
-    assert.equal(findAll('.as-calendar-occurrence').length, 0, 'it shows an empty calendar');
+    assert.dom('.as-calendar-occurrence').doesNotExist('it shows an empty calendar');
 
     selectTime({ day: 0, timeSlot: 0 });
 
-    assert.equal(findAll('.as-calendar-occurrence').length, 1, 'it adds the occurrence to the calendar');
+    assert.dom('.as-calendar-occurrence').exists({ count: 1 }, 'it adds the occurrence to the calendar');
     assert.ok(this.get('occurrences.firstObject').startsAt instanceof Date, 'startsAt is a Date');
     assert.ok(this.get('occurrences.firstObject').endsAt instanceof Date, 'endsAt is a Date');
   });
@@ -76,13 +76,13 @@ module('AsCalendarComponent', function(hooks) {
 
     selectTime({ day: 0, timeSlot: 0 });
 
-    assert.equal(findAll('.as-calendar-occurrence').length, 1, 'it adds the occurrence to the calendar');
+    assert.dom('.as-calendar-occurrence').exists({ count: 1 }, 'it adds the occurrence to the calendar');
 
     run(() => {
       click('.as-calendar-occurrence .as-calendar-occurrence__remove');
     });
 
-    assert.equal(findAll('.as-calendar-occurrence').length, 0, 'it removes the occurrence from the calendar');
+    assert.dom('.as-calendar-occurrence').doesNotExist('it removes the occurrence from the calendar');
   });
 
 
@@ -102,9 +102,7 @@ module('AsCalendarComponent', function(hooks) {
 
     selectTime({ day: 0, timeSlot: 0 });
 
-    assert.equal(findAll('.as-calendar-occurrence').length, 1,
-      'it adds the occurrence to the calendar'
-    );
+    assert.dom('.as-calendar-occurrence').exists({ count: 1 }, 'it adds the occurrence to the calendar');
 
     resizeOccurrence(find('.as-calendar-occurrence'), { timeSlots: 2 });
 
@@ -127,7 +125,7 @@ module('AsCalendarComponent', function(hooks) {
 
     selectTime({ day: 0, timeSlot: 0 });
 
-    assert.equal(findAll('.as-calendar-occurrence').length, 1, 'it adds the occurrence to the calendar');
+    assert.dom('.as-calendar-occurrence').exists({ count: 1 }, 'it adds the occurrence to the calendar');
     let inMonday = find(testSelector('day-id', '0')).find('.as-calendar-occurrence').length === 1;
     assert.ok(inMonday);
 
@@ -170,7 +168,7 @@ module('AsCalendarComponent', function(hooks) {
         startingDate="2017-06-08"}}
     `);
 
-    assert.equal(find('.as-calendar-timetable__column-item:first-child').textContent.trim(), 'Mon 5 Jun');
+    assert.dom(find('.as-calendar-timetable__column-item:first-child')).hasText('Mon 5 Jun');
   });
 
   test('Week starts from specified day', async function(assert) {
@@ -182,7 +180,7 @@ module('AsCalendarComponent', function(hooks) {
         startFromDate=true}}
     `);
 
-    assert.equal(find('.as-calendar-timetable__column-item:first-child').textContent.trim(), 'Thu 8 Jun');
+    assert.dom(find('.as-calendar-timetable__column-item:first-child')).hasText('Thu 8 Jun');
   });
 
   test('Week starts from today', async function(assert) {
@@ -194,6 +192,6 @@ module('AsCalendarComponent', function(hooks) {
     `);
 
     const today = moment().format('ddd D MMM');
-    assert.equal(find('.as-calendar-timetable__column-item:first-child').textContent.trim(), today);
+    assert.dom(find('.as-calendar-timetable__column-item:first-child')).hasText(today);
   });
 });

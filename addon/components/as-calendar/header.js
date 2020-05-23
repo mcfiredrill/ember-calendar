@@ -11,10 +11,10 @@ export default Component.extend({
 
   actions: {
     navigateNext: function () {
-      this.get('model').navigateNext();
+      this.model.navigateNext();
 
-      if (this.get('onNavigate')) {
-        this.get('onNavigate')({
+      if (this.onNavigate) {
+        this.onNavigate({
           view: this.get('model.type'),
           start: this.get('model.startDate'),
           end: this.get('model.endDate'),
@@ -23,10 +23,10 @@ export default Component.extend({
       }
     },
     navigatePrevious: function() {
-      this.get('model').navigatePrevious();
+      this.model.navigatePrevious();
 
-      if (this.get('onNavigate')) {
-        this.get('onNavigate')({
+      if (this.onNavigate) {
+        this.onNavigate({
           view: this.get('model.type'),
           start: this.get('model.startDate'),
           end: this.get('model.endDate'),
@@ -36,13 +36,13 @@ export default Component.extend({
     },
 
     changeType: function (type) {
-      if (this.get('onTypeChange')) {
-        this.get('onTypeChange')(type);
+      if (this.onTypeChange) {
+        this.onTypeChange(type);
       }
     },
 
     goToToday: function() {
-      this.get('model').goToToday();
+      this.model.goToToday();
     }
   }
 });

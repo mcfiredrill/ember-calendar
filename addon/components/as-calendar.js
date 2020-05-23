@@ -38,7 +38,7 @@ export default Component.extend({
       monthHeader: 'MMMM YYYY',
       monthContent: 'ddd'
     };
-    this.set('dateFormatOptions', Object.assign(dateFormatDefaults, this.get('dateFormatOptions')));
+    this.set('dateFormatOptions', Object.assign(dateFormatDefaults, this.dateFormatOptions));
 
     this.set('model', ComponentCalendar.create({ component: this }));
   },
@@ -47,28 +47,28 @@ export default Component.extend({
     addOccurrence: function (time) {
       if (this.get('model.isMonthView')) { return false; }
 
-      var occurrence = this.get('model').createOccurrence({
+      var occurrence = this.model.createOccurrence({
         startsAt: time.toDate()
       });
 
-      this.get('onAddOccurrence')(occurrence.get('content'));
+      this.onAddOccurrence(occurrence.get('content'));
     },
 
     onNavigate: function(index) {
-      if (this.get('onNavigate')) {
-        this.get('onNavigate')(index);
+      if (this.onNavigate) {
+        this.onNavigate(index);
       }
     },
 
     navigateToDay: function (day) {
-      this.get('model').goToDayView(day);
+      this.model.goToDayView(day);
     },
 
     changeType: function (type) {
-      this.get('model').changeType(type);
+      this.model.changeType(type);
 
-      if (this.get('onTypeChange')) {
-        this.get('onTypeChange')(type);
+      if (this.onTypeChange) {
+        this.onTypeChange(type);
       }
     }
   }

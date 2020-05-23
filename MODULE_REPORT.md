@@ -3,12 +3,12 @@
 
 **Global**: `Ember.Copyable`
 
-**Location**: `addon/models/occurrence-proxy.js` at line 6
+**Location**: `addon/models/occurrence-proxy.js` at line 8
 
 ```js
 import Day from './day';
 
-var OccurrenceProxy = Ember.Object.extend(Ember.Copyable, {
+var OccurrenceProxy = EmberObject.extend(Ember.Copyable, {
   calendar: null,
   content: null,
 ```
@@ -17,12 +17,12 @@ var OccurrenceProxy = Ember.Object.extend(Ember.Copyable, {
 
 **Global**: `Ember.MODEL_FACTORY_INJECTIONS`
 
-**Location**: `tests/dummy/app/app.js` at line 8
+**Location**: `tests/dummy/app/app.js` at line 9
 
 ```js
 let App;
 
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
-App = Ember.Application.extend({
+App = Application.extend({
 ```

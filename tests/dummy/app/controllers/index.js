@@ -1,4 +1,4 @@
-import EmberObject from '@ember/object';
+import EmberObject, { computed } from '@ember/object';
 import { A } from '@ember/array';
 import { on } from '@ember/object/evented';
 import Controller from '@ember/controller';
@@ -20,18 +20,18 @@ export default Controller.extend({
   timeOptions: [],
   selectedStartingTime: 8,
   selectedEndingTime: 21,
-  dayStartingTime: Ember.computed('selectedStartingTime', function () {
-    return `${this.get('selectedStartingTime')}:00`;
+  dayStartingTime: computed('selectedStartingTime', function () {
+    return `${this.selectedStartingTime}:00`;
   }),
-  dayEndingTime: Ember.computed('selectedEndingTime', function () {
-    return `${this.get('selectedEndingTime')}:00`;
+  dayEndingTime: computed('selectedEndingTime', function () {
+    return `${this.selectedEndingTime}:00`;
   }),
   _initializeDefaults: on('init', function() {
-    if (this.get('selections') == null) {
+    if (this.selections == null) {
       this.set('selections', A());
     }
 
-    if (this.get('occurrences') == null) {
+    if (this.occurrences == null) {
       this.set('occurrences', A());
     }
 
@@ -40,7 +40,7 @@ export default Controller.extend({
 
   actions: {
     calendarAddOccurrence: function(occurrence) {
-      this.get('occurrences').pushObject(EmberObject.create({
+      this.occurrences.pushObject(EmberObject.create({
         title: occurrence.get('title'),
         startsAt: occurrence.get('startsAt'),
         endsAt: occurrence.get('endsAt')
@@ -57,7 +57,7 @@ export default Controller.extend({
     },
 
     calendarRemoveOccurrence: function(occurrence) {
-      this.get('occurrences').removeObject(occurrence);
+      this.occurrences.removeObject(occurrence);
     },
 
     calendarEditOccurrence: function(occurrence) {

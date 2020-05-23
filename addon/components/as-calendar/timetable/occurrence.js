@@ -29,7 +29,7 @@ export default OccurrenceComponent.extend({
       run(this, this._mouseUp, event);
     });
 
-    if (this.get('isResizable')) {
+    if (this.isResizable) {
       interactable.resizable({
         edges: { bottom: '.as-calendar-occurrence__resize-handle' },
 
@@ -47,7 +47,7 @@ export default OccurrenceComponent.extend({
       });
     }
 
-    if (this.get('isDraggable')) {
+    if (this.isDraggable) {
       interactable.draggable({
         onstart: (event) => {
           run(this, this._dragStart, event);
@@ -63,14 +63,14 @@ export default OccurrenceComponent.extend({
       });
     }
 
-    if (this.get('onClick')) {
+    if (this.onClick) {
       interactable.on('tap', (event) => {
         if (event.double) { return; }
         run(this, this._tap, event);
       });
     }
 
-    if (this.get('onDoubleClick')) {
+    if (this.onDoubleClick) {
       interactable.on('doubletap', (event) => {
         run(this, this._doubleTap, event);
       });
@@ -83,24 +83,24 @@ export default OccurrenceComponent.extend({
 
   _resizeStart: function() {
     this.set('isInteracting', true);
-    this.set('_calendar.occurrencePreview', this.get('model').copy());
+    this.set('_calendar.occurrencePreview', this.model.copy());
   },
 
   _resizeMove: function(event) {
     var newDuration = moment.duration(
-      Math.floor(event.rect.height / this.get('timeSlotHeight')) *
-      this.get('computedTimeSlotDuration').as('ms')
+      Math.floor(event.rect.height / this.timeSlotHeight) *
+      this.computedTimeSlotDuration.as('ms')
     );
 
     var changes = {
-      endsAt: moment(this.get('_startingTime')).add(newDuration).toDate()
+      endsAt: moment(this._startingTime).add(newDuration).toDate()
     };
 
     this._validateAndSavePreview(changes);
   },
 
   _resizeEnd: function() {
-    this.get('onUpdate')(this.get('content'), {
+    this.onUpdate(this.content, {
       endsAt: this.get('_preview.content.endsAt')
     });
 
@@ -110,8 +110,8 @@ export default OccurrenceComponent.extend({
 
   _dragStart: function() {
     var $this = this.element;
-    var $referenceElement = this.get('referenceElement');
-    const preview = this.get('model').copy();
+    var $referenceElement = this.referenceElement;
+    const preview = this.model.copy();
 
     preview.set('isPreview', true);
     this.set('isInteracting', true);
@@ -125,15 +125,15 @@ export default OccurrenceComponent.extend({
   },
 
   _dragMove: function(event) {
-    this.set('_dragVerticalOffset', this.get('_dragVerticalOffset') + event.dy);
+    this.set('_dragVerticalOffset', this._dragVerticalOffset + event.dy);
 
     var dragTimeSlotOffset = this._dragTimeSlotOffset(event);
     var dragDayOffset = this._dragDayOffset(event);
-    var startsAt = moment(this.get('_startingTime')).add(dragTimeSlotOffset).add(dragDayOffset);
+    var startsAt = moment(this._startingTime).add(dragTimeSlotOffset).add(dragDayOffset);
 
     var changes = {
       startsAt: startsAt.toDate(),
-      endsAt: moment(startsAt).add(this.get('_duration')).toDate()
+      endsAt: moment(startsAt).add(this._duration).toDate()
     };
 
     this._validateAndSavePreview(changes);
@@ -141,18 +141,18 @@ export default OccurrenceComponent.extend({
 
   _dragTimeSlotOffset: function() {
     var verticalDrag = this._clamp(
-      this.get('_dragVerticalOffset'),
-      this.get('_dragTopDistance'),
-      this.get('_dragBottomDistance')
+      this._dragVerticalOffset,
+      this._dragTopDistance,
+      this._dragBottomDistance
     );
 
     return moment.duration(
-      Math.floor(verticalDrag / this.get('timeSlotHeight')) * this.get('computedTimeSlotDuration')
+      Math.floor(verticalDrag / this.timeSlotHeight) * this.computedTimeSlotDuration
     );
   },
 
   _dragDayOffset: function(event) {
-    var $referenceElement = $(this.get('referenceElement'));
+    var $referenceElement = $(this.referenceElement);
 
     var offsetX = this._clamp(
       event.pageX - $referenceElement.offset().left,
@@ -161,14 +161,14 @@ export default OccurrenceComponent.extend({
     );
 
     return moment.duration(
-      Math.floor(offsetX / this.get('dayWidth')) -
+      Math.floor(offsetX / this.dayWidth) -
       this.get('day.offset'),
       'days'
     );
   },
 
   _dragEnd: function() {
-    this.get('onUpdate')(this.get('content'), {
+    this.onUpdate(this.content, {
       startsAt: this.get('_preview.content.startsAt'),
       endsAt: this.get('_preview.content.endsAt')
     });
@@ -185,29 +185,29 @@ export default OccurrenceComponent.extend({
   },
 
   _tap: function(event) {
-    this.get('onClick')(this.get('content'));
+    this.onClick(this.content);
     event.preventDefault();
   },
 
   _doubleTap: function(event) {
-    this.get('onDoubleClick')(this.get('content'));
+    this.onDoubleClick(this.content);
     event.preventDefault();
   },
 
   _validateAndSavePreview: function(changes) {
     if (this._validatePreviewChanges(changes)) {
-      this.get('onUpdate')(this.get('_preview.content'), changes);
+      this.onUpdate(this.get('_preview.content'), changes);
     }
   },
 
   _validatePreviewChanges: function(changes) {
-    var newPreview = this.get('_preview').copy();
+    var newPreview = this._preview.copy();
 
     newPreview.get('content').setProperties(changes);
 
     return newPreview.get('startingTime') >= newPreview.get('day.startingTime') &&
            newPreview.get('endingTime') <= newPreview.get('day.endingTime') &&
-           newPreview.get('duration') >= this.get('computedTimeSlotDuration');
+           newPreview.get('duration') >= this.computedTimeSlotDuration;
   },
 
   _clamp: function(number, min, max) {
@@ -216,11 +216,11 @@ export default OccurrenceComponent.extend({
 
   actions: {
     remove: function() {
-      this.get('onRemove')(this.get('content'));
+      this.onRemove(this.content);
       this.set('isInteracting', false);
     },
     edit: function() {
-      this.get('onEdit')(this.get('content'));
+      this.onEdit(this.content);
       this.set('isInteracting', false);
     }
   }

@@ -15,20 +15,20 @@ var OccurrenceProxy = EmberObject.extend(Ember.Copyable, {
 
   duration: computed('startingTime', 'endingTime', function() {
     return moment.duration(
-      this.get('endingTime').diff(this.get('startingTime'))
+      this.endingTime.diff(this.startingTime)
     );
   }),
 
   day: computed('startingTime', 'calendar', 'calendar.{startingTime,startFromDate}', function() {
     return Day.create({
-      calendar: this.get('calendar'),
-      offset: this.get('startingTime').diff(this.get('calendar.startDate'), 'days')
+      calendar: this.calendar,
+      offset: this.startingTime.diff(this.get('calendar.startDate'), 'days')
     });
   }),
 
   copy: function() {
     return OccurrenceProxy.create({
-      calendar: this.get('calendar'),
+      calendar: this.calendar,
 
       content: EmberObject.create({
         startsAt: this.get('content.startsAt'),

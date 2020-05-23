@@ -5,20 +5,20 @@ export default EmberObject.extend({
   value: null,
 
   description: computed('value', function() {
-    return `${this.get('_title')}
-            (${this.get('_offset')}
-            ${this.get('abbreviation')})`;
+    return `${this._title}
+            (${this._offset}
+            ${this.abbreviation})`;
   }),
 
   abbreviation: computed('value', function() {
-    return moment().tz(this.get('value')).format('z');
+    return moment().tz(this.value).format('z');
   }),
 
   _title: computed('value', function() {
-    return this.get('value').replace('_', ' ');
+    return this.value.replace('_', ' ');
   }),
 
   _offset: computed('value', function() {
-    return moment().tz(this.get('value')).format('Z');
+    return moment().tz(this.value).format('Z');
   })
 });

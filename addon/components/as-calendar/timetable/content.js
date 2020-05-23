@@ -15,11 +15,11 @@ export default Component.extend({
   timetable: null,
 
   timeSlotStyle: computed('timeSlotHeight', function() {
-    return htmlSafe(`height: ${this.get('timeSlotHeight')}px`);
+    return htmlSafe(`height: ${this.timeSlotHeight}px`);
   }),
 
   dayWidth: computed(function() {
-    if (this.get('_wasInserted')) {
+    if (this._wasInserted) {
       return this.element.offsetWidth / this.get('days.length');
     } else {
       return 0;
@@ -32,7 +32,7 @@ export default Component.extend({
   'model.isMonthView',
   'timeSlotHeight',
   'timeSlots.length', function() {
-      return htmlSafe(`height: ${this.get('model.isMonthView') ? '600px' : this.get('timeSlots.length') * this.get('timeSlotHeight')}px;`);
+      return htmlSafe(`height: ${this.get('model.isMonthView') ? '600px' : this.get('timeSlots.length') * this.timeSlotHeight}px;`);
   }),
 
   didInsertElement() {
@@ -49,21 +49,21 @@ export default Component.extend({
     var offsetX = event.pageX - Math.floor(offset.left);
     var offsetY = event.pageY - Math.floor(offset.top);
 
-    var dayIndex = Math.floor(offsetX / this.get('dayWidth'));
-    var timeSlotIndex = Math.floor(offsetY / this.get('timeSlotHeight'));
-    var day = this.get('days').objectAt(dayIndex);
+    var dayIndex = Math.floor(offsetX / this.dayWidth);
+    var timeSlotIndex = Math.floor(offsetY / this.timeSlotHeight);
+    var day = this.days.objectAt(dayIndex);
 
-    var timeSlot = this.get('timeSlots').objectAt(timeSlotIndex);
+    var timeSlot = this.timeSlots.objectAt(timeSlotIndex);
 
-    this.get('onSelectTime')(
+    this.onSelectTime(
       moment(day.get('value')).add(timeSlot.get('time'))
     );
   },
 
   actions: {
     goTo: function (day) {
-      if (this.get('onNavigateToDay')) {
-        this.get('onNavigateToDay')(day);
+      if (this.onNavigateToDay) {
+        this.onNavigateToDay(day);
       }
     }
   }

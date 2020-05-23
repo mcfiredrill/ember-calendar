@@ -16,6 +16,6 @@ export default Component.extend({
   }),
 
   click() {
-    this.get('onSelect')(this.get('option.value'));
+    this.onSelect(this.get('option.value'));
   }
 });

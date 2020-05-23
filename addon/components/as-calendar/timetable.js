@@ -32,28 +32,28 @@ export default Component.extend({
   }),
   now: moment(),
   currentDayNumber: computed('now', function () {
-    const nowDayNumber = this.get('now').day();
-    const startOfWeek = this.get('startOfWeek');
+    const nowDayNumber = this.now.day();
+    const startOfWeek = this.startOfWeek;
 
     return nowDayNumber === 0 ? startOfWeek : nowDayNumber - startOfWeek;
   }),
   nowTime: computed('now', function () {
-    return this.get('now').format(this.get('nowTimeLabelFormat'));
+    return this.now.format(this.nowTimeLabelFormat);
   }),
   _formattedNow: computed('now', function() {
-    return this.get('now').format('kk:mm');
+    return this.now.format('kk:mm');
   }),
   computedNowTime: computedDuration('_formattedNow'),
   timeFromStartOfTheDay: computed('computedNowTime', '_dayStartingTime', function () {
-    return this.get('computedNowTime').asMilliseconds() - this.get('_dayStartingTime').asMilliseconds();
+    return this.computedNowTime.asMilliseconds() - this._dayStartingTime.asMilliseconds();
   }),
   dayDuration: computed('_dayStartingTime', '_dayEndingTime', function () {
-    return this.get('_dayEndingTime').asMilliseconds() - this.get('_dayStartingTime').asMilliseconds();
+    return this._dayEndingTime.asMilliseconds() - this._dayStartingTime.asMilliseconds();
   }),
 
   hourMarkerStyle: computed('timeFromStartOfTheDay', 'dayDuration', function () {
-    const timeFromStartOfTheDay = this.get('timeFromStartOfTheDay');
-    const dayDuration = this.get('dayDuration');
+    const timeFromStartOfTheDay = this.timeFromStartOfTheDay;
+    const dayDuration = this.dayDuration;
 
     let topPercentage = 0;
     let visibility = 'visible';
@@ -68,10 +68,10 @@ export default Component.extend({
   }),
 
   labeledTimeSlots: computed('timeSlots.[]', 'now', function () {
-    const now = this.get('now');
+    const now = this.now;
     const startOfDay = moment().startOf('day');
 
-    return this.get('timeSlots')
+    return this.timeSlots
       .filter(function (_, index) {
         return (index % 2) === 0;
       })
@@ -81,20 +81,20 @@ export default Component.extend({
         const ONE_HOUR = 60 * 60 * 1000;
 
         return {
-          label: value.format(this.get('timeSlotLabelFormat')),
+          label: value.format(this.timeSlotLabelFormat),
           isHidden: diff > 0 && diff < ONE_HOUR // hide label if its close to the now time marker
         };
       });
   }),
 
   timeSlotLabelListStyle: computed('timeSlotHeight', function() {
-    var timeSlotHeight = this.get('timeSlotHeight');
+    var timeSlotHeight = this.timeSlotHeight;
 
     return htmlSafe(`margin-top: -${timeSlotHeight / 2}px; line-height: ${timeSlotHeight * 2}px;`);
   }),
 
   timeSlotLabelStyle: computed('timeSlotHeight', function() {
-    return htmlSafe(`height: ${2 * this.get('timeSlotHeight')}px;`);
+    return htmlSafe(`height: ${2 * this.timeSlotHeight}px;`);
   }),
 
   init() {
@@ -125,8 +125,8 @@ export default Component.extend({
 
   actions: {
     goTo: function (day) {
-      if (this.get('onNavigateToDay')) {
-        this.get('onNavigateToDay')(day);
+      if (this.onNavigateToDay) {
+        this.onNavigateToDay(day);
       }
     }
   }
